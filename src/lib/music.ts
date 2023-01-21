@@ -119,31 +119,7 @@ export default class Music {
 	}
 
 	weekDayToInstrumentType(weekDay: WeekDay, instruments: InstrumentType[]): InstrumentType {
-		let res: InstrumentType;
-		switch (weekDay) {
-			case WeekDay.sun:
-				res = instruments[weekDay];
-				break;
-			case WeekDay.mon:
-				res = instruments[weekDay];
-				break;
-			case WeekDay.tue:
-				res = instruments[weekDay];
-				break;
-			case WeekDay.wed:
-				res = instruments[weekDay];
-				break;
-			case WeekDay.thu:
-				res = instruments[weekDay];
-				break;
-			case WeekDay.fri:
-				res = instruments[weekDay];
-				break;
-			case WeekDay.sat:
-				res = instruments[weekDay];
-				break;
-		}
-		return res;
+		return instruments[weekDay];
 	}
 
 	contributionCountToVelocity(cnt: number): number {
