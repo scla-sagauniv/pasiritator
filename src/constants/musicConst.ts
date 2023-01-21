@@ -20,6 +20,8 @@ export const SoundType = {
 };
 export type SoundType = (typeof SoundType)[keyof typeof SoundType];
 
+export const PianoSoundType = ['C4', 'D4', 'E4', 'F4', 'G4', 'H4', 'I4'] as const;
+
 export const InstrumentType = {
 	piano: 0,
 	drum: 1,

@@ -20,13 +20,13 @@ export type ContributionCalendar = {
 };
 
 export type Score = {
-	sun: { note: string | null; velocity: number }[];
-	mon: { note: string | null; velocity: number }[];
-	tue: { note: string | null; velocity: number }[];
-	wed: { note: string | null; velocity: number }[];
-	thu: { note: string | null; velocity: number }[];
-	fri: { note: string | null; velocity: number }[];
-	sat: { note: string | null; velocity: number }[];
+	sun: { note: SoundType | null; velocity: number }[];
+	mon: { note: SoundType | null; velocity: number }[];
+	tue: { note: SoundType | null; velocity: number }[];
+	wed: { note: SoundType | null; velocity: number }[];
+	thu: { note: SoundType | null; velocity: number }[];
+	fri: { note: SoundType | null; velocity: number }[];
+	sat: { note: SoundType | null; velocity: number }[];
 };
 
 export const weekDayKeys = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
