@@ -7,7 +7,7 @@
 	import axios from 'axios';
 
 	export let userId;
-	const fetchContributions = async (userId) => {
+	const fetchContributions = async (userId: string): Promise<ContributionCalendar> => {
 		const now = new Date();
 		const to = now.toISOString();
 		now.setFullYear(now.getFullYear() - 1);
@@ -39,13 +39,14 @@
 			'Content-type': 'application/json'
 		};
 		const res = await axios.post('https://api.github.com/graphql', query, { headers: headers });
+		return res.data.user.contributionsCollection.contributionCalendar;
 	};
 
-	const music = new Music().fromContributionCalendar(
-		fetchContributions(userId).data.user.contributionsCollection
-			.contributionCalendar as ContributionCalendar
-	);
-	console.log(music.score);
+	let music: Music;
+	fetchContributions(userId).then((res) => {
+		music = new Music().fromContributionCalendar(res as ContributionCalendar);
+		console.log(music.score);
+	});
 
 	let isPlaying = false;
 	const togglePlaying = () => {
