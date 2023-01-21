@@ -2,11 +2,12 @@
 	import { onMount } from 'svelte';
 	import C4 from '$lib/assets/C4.mp3';
 	// import { data } from '../../tmp/demo';
-	import { data } from '../../tmp/bikiniki';
+	// import { data } from '../../tmp/bikiniki';
 	import Music, { weekDayKeys, type Score, type ContributionCalendar } from '../../lib/music';
 	import axios from 'axios';
 
-	export let userId;
+	export let data;
+	let userId: string;
 	const fetchContributions = async (userId: string): Promise<ContributionCalendar> => {
 		const now = new Date();
 		const to = now.toISOString();
@@ -39,14 +40,12 @@
 			'Content-type': 'application/json'
 		};
 		const res = await axios.post('https://api.github.com/graphql', query, { headers: headers });
-		return res.data.user.contributionsCollection.contributionCalendar;
+		console.log('res.data:', res.data);
+
+		return res.data.data.user.contributionsCollection.contributionCalendar;
 	};
 
 	let music: Music;
-	fetchContributions(userId).then((res) => {
-		music = new Music().fromContributionCalendar(res as ContributionCalendar);
-		console.log(music.score);
-	});
 
 	let isPlaying = false;
 	const togglePlaying = () => {
@@ -57,7 +56,13 @@
 	let onStop = () => {};
 
 	onMount(async () => {
+		userId = data.userId;
 		const Tone = await import('tone');
+		console.log(userId);
+		await fetchContributions(userId).then((res) => {
+			music = new Music().fromContributionCalendar(res as ContributionCalendar);
+			console.log('music.score:', music.score);
+		});
 		const sampler = new Tone.Sampler({
 			urls: {
 				C4: C4
