@@ -1,48 +1,6 @@
 <script>
 	import Button from '../lib/components/Button.svelte';
-	import axios from 'axios';
-	// require('dotenv').config();
-	// console.log(process.env.KEY1);  //=> VALUE1
-	// console.log(process.env.KEY2);  //=> VALUE2
-	// console.log(process.env.KEY3);  //=> VALUE3
 
-	const fetchContributions = async (userId) => {
-		const now = new Date();
-		const to = now.toISOString();
-		now.setFullYear(now.getFullYear() - 1);
-		const from = now.toISOString();
-
-		// const query = `
-		// { "query": "query { viewer { login }}"}
-		// `
-		const query = {
-			query: `query contributions {
-          user(login: "${userId}") {
-            contributionsCollection(from: "${from}", to: "${to}") {
-              contributionCalendar {
-                weeks {
-                  contributionDays {
-                    date
-                    contributionCount
-                  }
-                }
-              }
-            }
-          }
-        }`
-		};
-		console.log(query);
-
-		const token = import.meta.env.VITE_KEY1;
-		const headers = {
-			Authorization: `bearer ${token}`,
-			'Content-type': 'application/json'
-		};
-		const res = await axios.post('https://api.github.com/graphql', query, { headers: headers });
-		console.log(res.data);
-	};
-	// const arrayEdit = async (readata) => {
-	// }
 	let name = '';
 </script>
 
@@ -62,7 +20,7 @@
 			placeholder="Github ID"
 		/>
 	</form>
-	<Button onClick={() => fetchContributions(`${name}`)} destination={`./music?userId=${name}`} />
+	<Button onClick={() => {}} destination={`./music?userId=${name}`} />
 </section>
 
 <style>
