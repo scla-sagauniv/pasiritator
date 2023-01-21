@@ -62,7 +62,7 @@
 			placeholder="Github ID"
 		/>
 	</form>
-	<Button onClick={() => fetchContributions(`${name}`)} userId={name} />
+	<Button onClick={() => fetchContributions(`${name}`)} destination={`./music?userId=${name}`} />
 </section>
 
 <style>

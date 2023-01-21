@@ -1,9 +1,9 @@
 <script>
 	export let onClick = () => {};
-	export let userId;
+	export let destination = '/';
 </script>
 
-<a href="./test?userId={userId}" on:click={onClick}>
+<a href={destination} on:click={onClick}>
 	<div class="button">ログイン</div>
 </a>
 
