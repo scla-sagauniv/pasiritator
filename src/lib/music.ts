@@ -110,4 +110,8 @@ export default class Music {
 		}
 		return res;
 	}
+
+	contributionCountToVelocity(cnt: number): number {
+		return cnt === 0 ? 0 : 1.1 - 1 / cnt;
+	}
 }
