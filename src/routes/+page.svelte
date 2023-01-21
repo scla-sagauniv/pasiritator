@@ -1,6 +1,12 @@
 <script>
   import Button from '../lib/components/Button.svelte';
   import axios from 'axios';
+  // require('dotenv').config();
+  // console.log(process.env.KEY1);  //=> VALUE1
+  // console.log(process.env.KEY2);  //=> VALUE2
+  // console.log(process.env.KEY3);  //=> VALUE3
+
+
 
   const fetchContributions = async (userId) => {
     const now = new Date()
@@ -28,7 +34,8 @@
         }`
     };
     console.log(query);
-    const token = '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';
+
+    const token = import.meta.env.VITE_KEY1
     const headers = {
       'Authorization': `bearer ${token}`,
       'Content-type': 'application/json'
@@ -39,7 +46,7 @@
   // const arrayEdit = async (readata) => {
     
   // }
-  let name = "Github ID";
+  let name = "";
 
 </script>
 
@@ -48,10 +55,10 @@
 </svelte:head>
 
 <section>
-  <h1>Githubの草で音を出そう！！</h1>
+  <h1>Grass Base</h1>
   <h2>Githubアカウントにログイン</h2>
   <form>
-    <input class="github-acc" type="text" name="github-account" bind:value={name}>
+    <input class="github-acc" type="text" name="github-account" bind:value={name} placeholder="Github ID">
   </form>
   <Button onClick={() => fetchContributions(`${name}`)}/>
 </section>
@@ -65,12 +72,12 @@
 		flex: 0.6;
 	}
   h1 {
-    font-size: 42px;
+    font-size: 84px;
     color: #FEBD69;
-    margin: 25px 0;
+    margin: 20px 0;
   }
   h2 {
-    font-size: 32px;
+    font-size: 24px;
     color: #fff;
     margin: 0;
   }
@@ -85,6 +92,6 @@
   .github-acc {
     margin: 0 auto;
     padding: 10px 30px;
-    width: 400px;
+    width: 250px;
   }
 </style>
