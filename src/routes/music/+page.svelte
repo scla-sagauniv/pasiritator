@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import C4 from '$lib/assets/C4.mp3';
-	import { data } from '../../tmp/demo';
+	// import { data } from '../../tmp/demo';
+	import { data } from '../../tmp/bikiniki';
 	import Music, { weekDayKeys, type Score, type ContributionCalendar } from '../../lib/music';
 
 	const music = new Music().fromContributionCalendar(
