@@ -30,6 +30,16 @@ enum WeekDay {
 	sat = 6
 }
 
+enum SoundType {
+	a = 0,
+	b = 1,
+	c = 2,
+	d = 3,
+	e = 4,
+	f = 5,
+	g = 6
+}
+
 export const weekDayKeys = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 
 export default class Music {
@@ -56,7 +66,7 @@ export default class Music {
 		}
 		contributionCalendar.weeks[0].contributionDays.forEach((day, i) => {
 			res.score[weekDayKeys[i + startWeekDayIdx] as keyof Score].push({
-				note: day.contributionCount === 0 ? null : this.weekDayToMusicScale(i),
+				note: day.contributionCount === 0 ? null : this.weekDayToSoundType(i),
 				velocity: day.contributionCount === 0 ? 0 : 1.1 - 1 / day.contributionCount
 			});
 		});
@@ -65,7 +75,7 @@ export default class Music {
 		contributionCalendar.weeks.forEach((days) => {
 			days.contributionDays.forEach((day, i) => {
 				res.score[weekDayKeys[i] as keyof Score].push({
-					note: day.contributionCount === 0 ? null : this.weekDayToMusicScale(i),
+					note: day.contributionCount === 0 ? null : this.weekDayToSoundType(i),
 					velocity: day.contributionCount === 0 ? 0 : 1.1 - 1 / day.contributionCount
 				});
 			});
@@ -73,29 +83,29 @@ export default class Music {
 		return res;
 	}
 
-	weekDayToMusicScale(weekDay: WeekDay): string {
-		let res: string;
+	weekDayToSoundType(weekDay: WeekDay): SoundType {
+		let res: SoundType;
 		switch (weekDay) {
 			case WeekDay.sun:
-				res = 'C4';
+				res = SoundType.a;
 				break;
 			case WeekDay.mon:
-				res = 'E4';
+				res = SoundType.b;
 				break;
 			case WeekDay.tue:
-				res = 'F4';
+				res = SoundType.c;
 				break;
 			case WeekDay.wed:
-				res = 'G4';
+				res = SoundType.d;
 				break;
 			case WeekDay.thu:
-				res = 'H4';
+				res = SoundType.e;
 				break;
 			case WeekDay.fri:
-				res = 'I4';
+				res = SoundType.f;
 				break;
 			case WeekDay.sat:
-				res = 'J4';
+				res = SoundType.g;
 				break;
 		}
 		return res;
