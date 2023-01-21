@@ -1,7 +1,9 @@
 <script>
+  export let onClick = () => {};
+  export let userId;
 </script>
 
-<a href="#">
+<a href="./test?userId={userId}" on:click={onClick}>
   <div class="button">ログイン</div>
 </a>
 
@@ -21,7 +23,7 @@
   line-height: 1.15385;
   margin-top: 20px;
   outline: none;
-  padding: 12px 30px;
+  padding: 9px 30px;
   position: relative;
   text-align: center;
   text-decoration: none;

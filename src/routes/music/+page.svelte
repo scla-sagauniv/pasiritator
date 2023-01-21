@@ -4,9 +4,46 @@
 	// import { data } from '../../tmp/demo';
 	import { data } from '../../tmp/bikiniki';
 	import Music, { weekDayKeys, type Score, type ContributionCalendar } from '../../lib/music';
+	import axios from 'axios';
+
+	export let userId;
+	const fetchContributions = async (userId) => {
+		const now = new Date();
+		const to = now.toISOString();
+		now.setFullYear(now.getFullYear() - 1);
+		const from = now.toISOString();
+		// const query = `
+		// { "query": "query { viewer { login }}"}
+		// `
+		const query = {
+			query: `query contributions {
+          user(login: "${userId}") {
+            contributionsCollection(from: "${from}", to: "${to}") {
+              contributionCalendar {
+                weeks {
+                  contributionDays {
+                    date
+                    contributionCount
+                  }
+                }
+              }
+            }
+          }
+        }`
+		};
+		console.log(query);
+
+		const token = import.meta.env.VITE_KEY1;
+		const headers = {
+			Authorization: `bearer ${token}`,
+			'Content-type': 'application/json'
+		};
+		const res = await axios.post('https://api.github.com/graphql', query, { headers: headers });
+	};
 
 	const music = new Music().fromContributionCalendar(
-		data.data.user.contributionsCollection.contributionCalendar as ContributionCalendar
+		fetchContributions(userId).data.user.contributionsCollection
+			.contributionCalendar as ContributionCalendar
 	);
 	console.log(music.score);
 
