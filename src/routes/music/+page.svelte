@@ -5,9 +5,10 @@
 	// import { data } from '../../tmp/bikiniki';
 	import Music, { weekDayKeys, type Score, type ContributionCalendar } from '../../lib/music';
 	import axios from 'axios';
+	import { goto } from '$app/navigation';
 
-	export let data;
-	let userId: string;
+	export let data = undefined;
+	let userId: string = '';
 	const fetchContributions = async (userId: string): Promise<ContributionCalendar> => {
 		const now = new Date();
 		const to = now.toISOString();
@@ -45,7 +46,7 @@
 		return res.data.data.user.contributionsCollection.contributionCalendar;
 	};
 
-	let music: Music;
+	let music: Music = new Music();
 
 	let isPlaying = false;
 	const togglePlaying = () => {
@@ -57,6 +58,10 @@
 
 	onMount(async () => {
 		userId = data.userId;
+		if (!userId) {
+			goto('/');
+			return;
+		}
 		const Tone = await import('tone');
 		console.log(userId);
 		await fetchContributions(userId).then((res) => {
