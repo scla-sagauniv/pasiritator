@@ -40,6 +40,13 @@ enum SoundType {
 	g = 6
 }
 
+enum InstrumentType {
+	piano = 0,
+	drum = 1,
+	guitar = 2,
+	base = 3
+}
+
 export const weekDayKeys = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 
 export default class Music {
@@ -106,6 +113,34 @@ export default class Music {
 				break;
 			case WeekDay.sat:
 				res = SoundType.g;
+				break;
+		}
+		return res;
+	}
+
+	weekDayToInstrumentType(weekDay: WeekDay, instruments: InstrumentType[]): InstrumentType {
+		let res: InstrumentType;
+		switch (weekDay) {
+			case WeekDay.sun:
+				res = instruments[weekDay];
+				break;
+			case WeekDay.mon:
+				res = instruments[weekDay];
+				break;
+			case WeekDay.tue:
+				res = instruments[weekDay];
+				break;
+			case WeekDay.wed:
+				res = instruments[weekDay];
+				break;
+			case WeekDay.thu:
+				res = instruments[weekDay];
+				break;
+			case WeekDay.fri:
+				res = instruments[weekDay];
+				break;
+			case WeekDay.sat:
+				res = instruments[weekDay];
 				break;
 		}
 		return res;
