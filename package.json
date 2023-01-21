@@ -30,8 +30,17 @@
 	"type": "module",
 	"dependencies": {
 		"@apollo/client": "^3.7.4",
+		"@octokit/core": "^4.2.0",
+		"apollo-server": "^3.11.1",
+		"axios": "^1.2.3",
+		"dayjs": "^1.11.7",
+		"dotenv": "^16.0.3",
 		"graphql": "^16.6.0",
 		"tone": "^14.7.77",
 		"ts-node": "^10.9.1"
-	}
+	},
+	"main": "index.js",
+	"repository": "https://github.com/scla-sagauniv/pasiritator",
+	"author": "smaru1111 <96244711+smaru1111@users.noreply.github.com>",
+	"license": "MIT"
 }
