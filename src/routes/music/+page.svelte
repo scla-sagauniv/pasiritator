@@ -2,8 +2,7 @@
 	import { onMount } from 'svelte';
 	import C4 from '$lib/assets/C4.mp3';
 	import { data } from '../../tmp/demo';
-	import Music, { weekDayKeys, type Score } from '../../lib/music';
-	import type { ContributionCalendar } from '../../lib/music';
+	import Music, { weekDayKeys, type Score, type ContributionCalendar } from '../../lib/music';
 
 	const music = new Music().fromContributionCalendar(
 		data.data.user.contributionsCollection.contributionCalendar as ContributionCalendar
