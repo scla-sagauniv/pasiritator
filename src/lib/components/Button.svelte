@@ -1,8 +1,9 @@
 <script>
   export let onClick = () => {};
+  export let userId;
 </script>
 
-<a href="#" on:click={onClick}>
+<a href="./test?userId={userId}" on:click={onClick}>
   <div class="button">ログイン</div>
 </a>
 
