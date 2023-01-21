@@ -7,7 +7,6 @@
   // console.log(process.env.KEY3);  //=> VALUE3
 
 
-
   const fetchContributions = async (userId) => {
     const now = new Date()
     const to = now.toISOString();
@@ -34,7 +33,7 @@
         }`
     };
     console.log(query);
-
+    
     const token = import.meta.env.VITE_KEY1
     const headers = {
       'Authorization': `bearer ${token}`,
@@ -42,12 +41,12 @@
     }
     const res = await axios.post('https://api.github.com/graphql', query, {headers: headers});
     console.log(res.data);
+    
   }
   // const arrayEdit = async (readata) => {
-    
   // }
   let name = "";
-
+  
 </script>
 
 <svelte:head>
@@ -60,7 +59,7 @@
   <form>
     <input class="github-acc" type="text" name="github-account" bind:value={name} placeholder="Github ID">
   </form>
-  <Button onClick={() => fetchContributions(`${name}`)}/>
+    <Button onClick={() => fetchContributions(`${name}`)} userId={name}/>
 </section>
 
 <style>
