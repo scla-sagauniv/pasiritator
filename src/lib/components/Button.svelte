@@ -1,7 +1,8 @@
 <script>
+  export let onClick = () => {};
 </script>
 
-<a href="#">
+<a href="#" on:click={onClick}>
   <div class="button">ログイン</div>
 </a>
 
