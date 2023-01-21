@@ -52,7 +52,7 @@ export default class Music {
 		// 最初の配列は何曜日始まりかわからないので何曜日始まりか求めてそれ以外はnillを入れる
 		const startWeekDayIdx = 7 - contributionCalendar.weeks[0].contributionDays.length;
 		for (let i = 0; i < startWeekDayIdx; i++) {
-			res.score[weekDayKeys[i] as keyof Score].push(null);
+			res.score[weekDayKeys[i] as keyof Score].push({ note: null, velocity: 0 });
 		}
 		contributionCalendar.weeks[0].contributionDays.forEach((day, i) => {
 			res.score[weekDayKeys[i + startWeekDayIdx] as keyof Score].push({
