@@ -21,8 +21,8 @@
 			}
 		}).toDestination();
 		weekDayKeys.forEach((weekDayKey) => {
-			new Tone.Sequence((time, note) => {
-				sampler.triggerAttackRelease(note, '16n', time);
+			new Tone.Sequence((time, value) => {
+				sampler.triggerAttackRelease(value.note, '16n', time, value.velocity);
 			}, music.score[weekDayKey as keyof Score]).start(0);
 		});
 		onPlay = async () => {

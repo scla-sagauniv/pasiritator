@@ -11,13 +11,13 @@ export type ContributionCalendar = {
 };
 
 export type Score = {
-	sun: (string | null)[];
-	mon: (string | null)[];
-	tue: (string | null)[];
-	wed: (string | null)[];
-	thu: (string | null)[];
-	fri: (string | null)[];
-	sat: (string | null)[];
+	sun: { note: string | null; velocity: number }[];
+	mon: { note: string | null; velocity: number }[];
+	tue: { note: string | null; velocity: number }[];
+	wed: { note: string | null; velocity: number }[];
+	thu: { note: string | null; velocity: number }[];
+	fri: { note: string | null; velocity: number }[];
+	sat: { note: string | null; velocity: number }[];
 };
 
 enum WeekDay {
@@ -55,17 +55,19 @@ export default class Music {
 			res.score[weekDayKeys[i] as keyof Score].push(null);
 		}
 		contributionCalendar.weeks[0].contributionDays.forEach((day, i) => {
-			res.score[weekDayKeys[i + startWeekDayIdx] as keyof Score].push(
-				day.contributionCount === 0 ? null : this.weekDayToMusicScale(i)
-			);
+			res.score[weekDayKeys[i + startWeekDayIdx] as keyof Score].push({
+				note: day.contributionCount === 0 ? null : this.weekDayToMusicScale(i),
+				velocity: day.contributionCount === 0 ? 0 : 1.1 - 1 / day.contributionCount
+			});
 		});
 		contributionCalendar.weeks.shift();
 
 		contributionCalendar.weeks.forEach((days) => {
 			days.contributionDays.forEach((day, i) => {
-				res.score[weekDayKeys[i] as keyof Score].push(
-					day.contributionCount === 0 ? null : this.weekDayToMusicScale(i)
-				);
+				res.score[weekDayKeys[i] as keyof Score].push({
+					note: day.contributionCount === 0 ? null : this.weekDayToMusicScale(i),
+					velocity: day.contributionCount === 0 ? 0 : 1.1 - 1 / day.contributionCount
+				});
 			});
 		});
 		return res;
