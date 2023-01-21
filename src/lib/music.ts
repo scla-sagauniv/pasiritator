@@ -149,4 +149,33 @@ export default class Music {
 	contributionCountToVelocity(cnt: number): number {
 		return cnt === 0 ? 0 : 1.1 - 1 / cnt;
 	}
+
+	contributionCountToSoundType(cnt: number, maxCnt = 28): SoundType | null {
+		let res: SoundType;
+		if (cnt === 0) return null;
+		switch (cnt / (maxCnt / 7)) {
+			case 0:
+				res = SoundType.a;
+				break;
+			case 1:
+				res = SoundType.b;
+				break;
+			case 2:
+				res = SoundType.c;
+				break;
+			case 3:
+				res = SoundType.d;
+				break;
+			case 4:
+				res = SoundType.e;
+				break;
+			case 5:
+				res = SoundType.f;
+				break;
+			default:
+				res = SoundType.g;
+				break;
+		}
+		return res;
+	}
 }
