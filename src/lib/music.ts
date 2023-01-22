@@ -61,7 +61,7 @@ export default class Music {
 			maxCount: number;
 		}
 	): Music {
-		const res = new Music();
+		const res = new Music(undefined, this.instruments);
 
 		// 最初の配列は何曜日始まりかわからないので何曜日始まりか求めてそれ以外はnillを入れる
 		const startWeekDayIdx = 7 - contributionCalendar.weeks[0].contributionDays.length;
