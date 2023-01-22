@@ -2,11 +2,11 @@
 	let ins: string = '';
 	import { onMount } from 'svelte';
 	// 音源インポート
-	import C4 from '$lib/assets/defaultC4.mp3';
+	import piano from '$lib/assets/pianoC4.mp3';
 	import base from '$lib/assets/baseC4.mp3';
-	import dram from '$lib/assets/dramC4.mp3';
-	import hat from '$lib/assets/hatC4.mp3';
-	import snere from '$lib/assets/snereC4.mp3';
+	import dram from '$lib/assets/dram.mp3';
+	import hat from '$lib/assets/hat.mp3';
+	import snere from '$lib/assets/snere.mp3';
 	// import { data } from '../../tmp/demo';
 	// import { data } from '../../tmp/bikiniki';
 	import Music, { weekDayKeys, type Score, type ContributionCalendar } from '../../lib/music';
@@ -19,8 +19,8 @@
 		PianoSoundType,
 		WeekDayDefinitionType
 	} from '../../constants/musicConst';
-	
-	let insValue = "default";
+
+	let insValue = 'default';
 	export let data = undefined;
 	let userId: string = '';
 	const fetchContributions = async (userId: string): Promise<ContributionCalendar> => {
@@ -48,7 +48,6 @@
         }`
 		};
 		console.log(query);
-
 
 		const token = import.meta.env.VITE_KEY1;
 		const headers = {
@@ -89,15 +88,14 @@
 			console.log('music.score:', music.score);
 		});
 
-
 		const pianoSampler = new Tone.Sampler({
 			urls: {
-				C4: C4
+				C4: piano
 			}
 		}).toDestination();
 		weekDayKeys.forEach((weekDayKey) => {
 			new Tone.Sequence((time, value) => {
-				sampler.triggerAttackRelease(
+				pianoSampler.triggerAttackRelease(
 					value.note !== null ? PianoSoundType[value.note] : value.note,
 					'16n',
 					time,
@@ -106,7 +104,7 @@
 			}, music.score[weekDayKey as keyof Score]).start(0);
 		});
 		onPlay = async () => {
-			await sampler.context.resume();
+			await pianoSampler.context.resume();
 			togglePlaying();
 			Tone.Transport.start();
 		};
@@ -116,9 +114,8 @@
 		};
 	});
 	$: {
-		console.log('koko', insValue);	
+		console.log('koko', insValue);
 	}
-		
 </script>
 
 <div class="play-container">
