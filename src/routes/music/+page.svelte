@@ -13,7 +13,13 @@
 	import axios from 'axios';
 	import { goto } from '$app/navigation';
 	import Pulldown from '$lib/components/Pulldown.svelte';
-	import { log } from 'tone/build/esm/core/util/Debug';
+	import {
+		ContributionDefinitionType,
+		defaultSoundType,
+		PianoSoundType,
+		WeekDayDefinitionType
+	} from '../../constants/musicConst';
+	
 	let insValue = "default";
 	export let data = undefined;
 	let userId: string = '';
@@ -74,7 +80,12 @@
 		const Tone = await import('tone');
 		console.log(userId);
 		await fetchContributions(userId).then((res) => {
-			music = new Music().fromContributionCalendar(res as ContributionCalendar);
+			// 音楽生成の定義
+			// ここに書いてあるのは全てデフォルト値としても設定されている
+			const data = res as ContributionCalendar;
+			const weekDay = { type: WeekDayDefinitionType.sound, value: defaultSoundType };
+			const contribution = { type: ContributionDefinitionType.velocity, value: undefined };
+			music = new Music().fromContributionCalendar(data, weekDay, contribution);
 			console.log('music.score:', music.score);
 		});
 
@@ -86,7 +97,12 @@
 		}).toDestination();
 		weekDayKeys.forEach((weekDayKey) => {
 			new Tone.Sequence((time, value) => {
-				sampler.triggerAttackRelease(value.note, '16n', time, value.velocity);
+				sampler.triggerAttackRelease(
+					value.note !== null ? PianoSoundType[value.note] : value.note,
+					'16n',
+					time,
+					value.velocity
+				);
 			}, music.score[weekDayKey as keyof Score]).start(0);
 		});
 		onPlay = async () => {

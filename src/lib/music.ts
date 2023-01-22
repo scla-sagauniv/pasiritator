@@ -1,3 +1,12 @@
+import {
+	ContributionDefinitionType,
+	defaultSoundType,
+	InstrumentType,
+	SoundType,
+	WeekDay,
+	WeekDayDefinitionType
+} from '../constants/musicConst';
+
 export type Contribution = {
 	contributionCount: number;
 };
@@ -11,30 +20,21 @@ export type ContributionCalendar = {
 };
 
 export type Score = {
-	sun: { note: string | null; velocity: number }[];
-	mon: { note: string | null; velocity: number }[];
-	tue: { note: string | null; velocity: number }[];
-	wed: { note: string | null; velocity: number }[];
-	thu: { note: string | null; velocity: number }[];
-	fri: { note: string | null; velocity: number }[];
-	sat: { note: string | null; velocity: number }[];
+	sun: { note: SoundType | null; velocity: number }[];
+	mon: { note: SoundType | null; velocity: number }[];
+	tue: { note: SoundType | null; velocity: number }[];
+	wed: { note: SoundType | null; velocity: number }[];
+	thu: { note: SoundType | null; velocity: number }[];
+	fri: { note: SoundType | null; velocity: number }[];
+	sat: { note: SoundType | null; velocity: number }[];
 };
-
-enum WeekDay {
-	sun = 0,
-	mon = 1,
-	tue = 2,
-	wed = 3,
-	thu = 4,
-	fri = 5,
-	sat = 6
-}
 
 export const weekDayKeys = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 
 export default class Music {
 	score: Score;
-	constructor(score?: Score) {
+	instruments: InstrumentType[];
+	constructor(score?: Score, instruments?: InstrumentType[]) {
 		this.score = score ?? {
 			sun: [],
 			mon: [],
@@ -44,9 +44,23 @@ export default class Music {
 			fri: [],
 			sat: []
 		};
+		this.instruments = instruments ?? new Array<InstrumentType>(7).fill(InstrumentType.piano);
 	}
 
-	fromContributionCalendar(contributionCalendar: ContributionCalendar): Music {
+	fromContributionCalendar(
+		contributionCalendar: ContributionCalendar,
+		weekDay: {
+			type: WeekDayDefinitionType;
+			value: SoundType[] | InstrumentType[];
+		} = { type: WeekDayDefinitionType.sound, value: defaultSoundType },
+		contributionCount: {
+			type: ContributionDefinitionType;
+			value: undefined | SoundType[];
+		} = { type: ContributionDefinitionType.velocity, value: undefined },
+		optins?: {
+			maxCount: number;
+		}
+	): Music {
 		const res = new Music();
 
 		// 最初の配列は何曜日始まりかわからないので何曜日始まりか求めてそれ以外はnillを入れる
@@ -55,47 +69,86 @@ export default class Music {
 			res.score[weekDayKeys[i] as keyof Score].push({ note: null, velocity: 0 });
 		}
 		contributionCalendar.weeks[0].contributionDays.forEach((day, i) => {
-			res.score[weekDayKeys[i + startWeekDayIdx] as keyof Score].push({
-				note: day.contributionCount === 0 ? null : this.weekDayToMusicScale(i),
-				velocity: day.contributionCount === 0 ? 0 : 1.1 - 1 / day.contributionCount
-			});
+			const data = { note: null, velocity: 1 };
+			if (weekDay.type === WeekDayDefinitionType.sound) {
+				data['note'] =
+					day.contributionCount === 0
+						? null
+						: this.weekDayToSoundType((i + startWeekDayIdx) as WeekDay, weekDay.value);
+			} else {
+				res.instruments = weekDay.value;
+			}
+			if (contributionCount.type === ContributionDefinitionType.velocity) {
+				data['velocity'] = this.contributionCountToVelocity(day.contributionCount);
+			} else {
+				data['note'] =
+					day.contributionCount === 0
+						? null
+						: this.contributionCountToSoundType(day.contributionCount, optins?.maxCount);
+			}
+			res.score[weekDayKeys[i] as keyof Score].push(data);
 		});
 		contributionCalendar.weeks.shift();
 
 		contributionCalendar.weeks.forEach((days) => {
 			days.contributionDays.forEach((day, i) => {
-				res.score[weekDayKeys[i] as keyof Score].push({
-					note: day.contributionCount === 0 ? null : this.weekDayToMusicScale(i),
-					velocity: day.contributionCount === 0 ? 0 : 1.1 - 1 / day.contributionCount
-				});
+				const data = { note: null, velocity: 1 };
+				if (weekDay.type === WeekDayDefinitionType.sound) {
+					data['note'] =
+						day.contributionCount === 0
+							? null
+							: this.weekDayToSoundType(i as WeekDay, weekDay.value);
+				}
+				if (contributionCount.type === ContributionDefinitionType.velocity) {
+					data['velocity'] = this.contributionCountToVelocity(day.contributionCount);
+				} else {
+					data['note'] =
+						day.contributionCount === 0
+							? null
+							: this.contributionCountToSoundType(day.contributionCount, optins?.maxCount);
+				}
+				res.score[weekDayKeys[i] as keyof Score].push(data);
 			});
 		});
 		return res;
 	}
 
-	weekDayToMusicScale(weekDay: WeekDay): string {
-		let res: string;
-		switch (weekDay) {
-			case WeekDay.sun:
-				res = 'C4';
+	weekDayToSoundType(weekDay: WeekDay, sounds: SoundType[]): SoundType {
+		return sounds[weekDay];
+	}
+
+	weekDayToInstrumentType(weekDay: WeekDay, instruments: InstrumentType[]): InstrumentType {
+		return instruments[weekDay];
+	}
+
+	contributionCountToVelocity(cnt: number): number {
+		return cnt === 0 ? 0 : 1.1 - 1 / cnt;
+	}
+
+	contributionCountToSoundType(cnt: number, maxCnt = 28): SoundType | null {
+		let res: SoundType;
+		if (cnt === 0) return null;
+		switch (cnt / (maxCnt / 7)) {
+			case 0:
+				res = SoundType.a;
 				break;
-			case WeekDay.mon:
-				res = 'E4';
+			case 1:
+				res = SoundType.b;
 				break;
-			case WeekDay.tue:
-				res = 'F4';
+			case 2:
+				res = SoundType.c;
 				break;
-			case WeekDay.wed:
-				res = 'G4';
+			case 3:
+				res = SoundType.d;
 				break;
-			case WeekDay.thu:
-				res = 'H4';
+			case 4:
+				res = SoundType.e;
 				break;
-			case WeekDay.fri:
-				res = 'I4';
+			case 5:
+				res = SoundType.f;
 				break;
-			case WeekDay.sat:
-				res = 'J4';
+			default:
+				res = SoundType.g;
 				break;
 		}
 		return res;
