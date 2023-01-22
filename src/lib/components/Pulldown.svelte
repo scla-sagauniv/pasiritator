@@ -1,6 +1,8 @@
 <script>
+	import { InstrumentType } from '../../constants/musicConst';
 	export let id;
-	export let value = 'default';
+	// export let value = InstrumentType.piano;
+	export let value = InstrumentType.base;
 	// let instrument = ["default","base", "dram", "hat", "snere"
 	// 	// { id: 1, text: `base` },
 	// 	// { id: 2, text: `dram` },
@@ -14,11 +16,9 @@
 
 <div class="pulldown-container">
 	<select bind:value>
-		<option value="default">default</option>
-		<option value="base">base</option>
-		<option value="dram">dram</option>
-		<option value="hat">hat</option>
-		<option value="snere">snere</option>
+		<option value={InstrumentType.piano}>ピアノ</option>
+		<option value={InstrumentType.base}>ベース</option>
+		<option value={InstrumentType.drum}>ドラム</option>
 	</select>
 
 	<Button onClick={() => {}} destination={`./music?userId=${id}`} name="決定" />
