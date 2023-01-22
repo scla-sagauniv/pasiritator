@@ -9,7 +9,7 @@
 </svelte:head>
 
 <section>
-	<h1>Grass Base</h1>
+	<h1>Grass Band</h1>
 	<h2>Githubアカウントにログイン</h2>
 	<form>
 		<input
@@ -20,7 +20,7 @@
 			placeholder="Github ID"
 		/>
 	</form>
-	<Button onClick={() => {}} destination={`./music?userId=${name}`} name="ログイン"/>
+	<Button onClick={() => {}} destination={`./music?userId=${name}`} name="ログイン" />
 </section>
 
 <style>
