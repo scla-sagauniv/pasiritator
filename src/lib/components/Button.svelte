@@ -1,10 +1,11 @@
 <script>
+	export let name;
 	export let onClick = () => {};
 	export let destination = '/';
 </script>
 
 <a href={destination} on:click={onClick}>
-	<div class="button">ログイン</div>
+	<div class="button">{name}</div>
 </a>
 
 <style>

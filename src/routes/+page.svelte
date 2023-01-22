@@ -20,7 +20,7 @@
 			placeholder="Github ID"
 		/>
 	</form>
-	<Button onClick={() => {}} destination={`./music?userId=${name}`} />
+	<Button onClick={() => {}} destination={`./music?userId=${name}`} name="ログイン"/>
 </section>
 
 <style>

@@ -1,19 +1,26 @@
 <script lang="ts">
+	let ins: string = '';
 	import { onMount } from 'svelte';
-	import C4 from '$lib/assets/C4.mp3';
+	// 音源インポート
+	import C4 from '$lib/assets/defaultC4.mp3';
+	import base from '$lib/assets/baseC4.mp3';
+	import dram from '$lib/assets/dramC4.mp3';
+	import hat from '$lib/assets/hatC4.mp3';
+	import snere from '$lib/assets/snereC4.mp3';
 	// import { data } from '../../tmp/demo';
 	// import { data } from '../../tmp/bikiniki';
 	import Music, { weekDayKeys, type Score, type ContributionCalendar } from '../../lib/music';
 	import axios from 'axios';
 	import { goto } from '$app/navigation';
+	import Pulldown from '$lib/components/Pulldown.svelte';
 	import {
 		ContributionDefinitionType,
 		defaultSoundType,
 		PianoSoundType,
 		WeekDayDefinitionType
 	} from '../../constants/musicConst';
-	import { Context } from 'tone';
-
+	
+	let insValue = "default";
 	export let data = undefined;
 	let userId: string = '';
 	const fetchContributions = async (userId: string): Promise<ContributionCalendar> => {
@@ -41,6 +48,7 @@
         }`
 		};
 		console.log(query);
+
 
 		const token = import.meta.env.VITE_KEY1;
 		const headers = {
@@ -80,7 +88,9 @@
 			music = new Music().fromContributionCalendar(data, weekDay, contribution);
 			console.log('music.score:', music.score);
 		});
-		const sampler = new Tone.Sampler({
+
+
+		const pianoSampler = new Tone.Sampler({
 			urls: {
 				C4: C4
 			}
@@ -105,14 +115,21 @@
 			Tone.Transport.pause();
 		};
 	});
+	$: {
+		console.log('koko', insValue);	
+	}
+		
 </script>
 
-<div class="full">
-	{#if !isPlaying}
-		<div class="video_play" on:click={onPlay} />
-	{:else}
-		<div class="video_pause" on:click={onStop} />
-	{/if}
+<div class="play-container">
+	<Pulldown bind:value={insValue} id={userId} />
+	<div class="full">
+		{#if !isPlaying}
+			<div class="video_play" on:click={onPlay} />
+		{:else}
+			<div class="video_pause" on:click={onStop} />
+		{/if}
+	</div>
 </div>
 
 <style>
