@@ -21,7 +21,7 @@
 		<option value={InstrumentType.drum}>ドラム</option>
 	</select>
 
-	<Button onClick={() => {}} destination={`./music?userId=${id}`} name="決定" />
+	<!-- <Button onClick={() => {}} destination={`./music?userId=${id}`} name="決定" /> -->
 </div>
 
 <style>
