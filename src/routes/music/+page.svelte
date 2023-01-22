@@ -2,11 +2,11 @@
 	let ins: string = '';
 	import { onMount } from 'svelte';
 	// 音源インポート
-	import C4 from '$lib/assets/defaultC4.mp3';
-	import base from '$lib/assets/baseC4.mp3';
-	import dram from '$lib/assets/dramC4.mp3';
-	import hat from '$lib/assets/hatC4.mp3';
-	import snere from '$lib/assets/snereC4.mp3';
+	import piano from '$lib/assets/pianoC4.mp3';
+	import base from '$lib/assets/baseC3.mp3';
+	import dram from '$lib/assets/dram.mp3';
+	import hat from '$lib/assets/hat.mp3';
+	import snere from '$lib/assets/snere.mp3';
 	// import { data } from '../../tmp/demo';
 	// import { data } from '../../tmp/bikiniki';
 	import Music, { weekDayKeys, type Score, type ContributionCalendar } from '../../lib/music';
@@ -14,14 +14,19 @@
 	import { goto } from '$app/navigation';
 	import Pulldown from '$lib/components/Pulldown.svelte';
 	import {
+		BaseSoundType,
 		ContributionDefinitionType,
 		defaultSoundType,
+		DramSoundType,
+		InstrumentType,
 		PianoSoundType,
 		WeekDayDefinitionType
 	} from '../../constants/musicConst';
-	
-	let insValue = "default";
+	import { now } from 'tone';
+
+	let selectedInstrument: InstrumentType;
 	export let data = undefined;
+
 	let userId: string = '';
 	const fetchContributions = async (userId: string): Promise<ContributionCalendar> => {
 		const now = new Date();
@@ -49,7 +54,6 @@
 		};
 		console.log(query);
 
-
 		const token = import.meta.env.VITE_KEY1;
 		const headers = {
 			Authorization: `bearer ${token}`,
@@ -62,15 +66,92 @@
 	};
 
 	let music: Music = new Music();
+	let pianoSampler, baseSampler, dramSampler, dramPlayer, hatPlayer, snerePlayer;
 
 	let isPlaying = false;
 	const togglePlaying = () => {
 		isPlaying = !isPlaying;
 	};
 
+	const setup = (Tone) => {
+		pianoSampler = new Tone.Sampler({
+			urls: {
+				C4: piano
+			}
+		}).toDestination();
+		baseSampler = new Tone.Sampler({
+			urls: {
+				C3: base
+			}
+		}).toDestination();
+		dramSampler = new Tone.Sampler({
+			urls: {
+				C4: dram,
+				D4: snere,
+				E4: hat
+			}
+		}).toDestination();
+		dramPlayer = new Tone.Player(dram).toDestination();
+		hatPlayer = new Tone.Player(hat).toDestination();
+		snerePlayer = new Tone.Player(snere).toDestination();
+		// await Tone.loaded();
+		onPlay = async () => {
+			await pianoSampler.context.resume();
+			await baseSampler.context.resume();
+			await dramSampler.context.resume();
+			togglePlaying();
+			Tone.Transport.start();
+
+			// dramPlayer.start();
+			// snerePlayer.start();
+			// hatPlayer.start();
+			// baseSampler.triggerAttackRelease('C4', '16n', now());
+			// baseSampler.triggerAttackRelease('D4', '16n', now() + 1);
+			// baseSampler.triggerAttackRelease('E4', '16n', now() + 2);
+		};
+		onStop = async () => {
+			togglePlaying();
+			Tone.Transport.pause();
+		};
+	};
+
+	const makeSequence = async () => {
+		const Tone = await import('tone');
+		sequences.forEach((e) => e.clear());
+		sequences = [];
+		weekDayKeys.forEach((weekDayKey, idx) => {
+			console.log(music.instruments[idx]);
+			let sampler, soundType;
+			switch (music.instruments[idx]) {
+				case InstrumentType.piano:
+					sampler = pianoSampler;
+					soundType = PianoSoundType;
+					break;
+				case InstrumentType.base:
+					sampler = baseSampler;
+					soundType = BaseSoundType;
+					break;
+				case InstrumentType.drum:
+					sampler = dramSampler;
+					soundType = DramSoundType;
+					break;
+			}
+			sequences.push(
+				new Tone.Sequence((time, value) => {
+					sampler.triggerAttackRelease(
+						value.note !== null ? soundType[value.note] : value.note,
+						'16n',
+						time,
+						value.velocity
+					);
+				}, music.score[weekDayKey as keyof Score]).start(0)
+			);
+		});
+	};
+
 	let onPlay = () => {};
 	let onStop = () => {};
-
+	let sequences = [];
 	onMount(async () => {
 		userId = data.userId;
 		if (!userId) {
@@ -78,51 +159,27 @@
 			return;
 		}
 		const Tone = await import('tone');
-		console.log(userId);
+		setup(Tone);
 		await fetchContributions(userId).then((res) => {
 			// 音楽生成の定義
 			// ここに書いてあるのは全てデフォルト値としても設定されている
 			const data = res as ContributionCalendar;
 			const weekDay = { type: WeekDayDefinitionType.sound, value: defaultSoundType };
 			const contribution = { type: ContributionDefinitionType.velocity, value: undefined };
-			music = new Music().fromContributionCalendar(data, weekDay, contribution);
+			music = music.fromContributionCalendar(data, weekDay, contribution);
 			console.log('music.score:', music.score);
 		});
-
-
-		const pianoSampler = new Tone.Sampler({
-			urls: {
-				C4: C4
-			}
-		}).toDestination();
-		weekDayKeys.forEach((weekDayKey) => {
-			new Tone.Sequence((time, value) => {
-				sampler.triggerAttackRelease(
-					value.note !== null ? PianoSoundType[value.note] : value.note,
-					'16n',
-					time,
-					value.velocity
-				);
-			}, music.score[weekDayKey as keyof Score]).start(0);
-		});
-		onPlay = async () => {
-			await sampler.context.resume();
-			togglePlaying();
-			Tone.Transport.start();
-		};
-		onStop = async () => {
-			togglePlaying();
-			Tone.Transport.pause();
-		};
+		makeSequence();
 	});
+
 	$: {
-		console.log('koko', insValue);	
+		music.instruments = new Array<InstrumentType>(7).fill(selectedInstrument);
+		makeSequence();
 	}
-		
 </script>
 
 <div class="play-container">
-	<Pulldown bind:value={insValue} id={userId} />
+	<Pulldown bind:value={selectedInstrument} id={userId} />
 	<div class="full">
 		{#if !isPlaying}
 			<div class="video_play" on:click={onPlay} />
