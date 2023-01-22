@@ -1,8 +1,8 @@
 <script>
 	import { InstrumentType } from '../../constants/musicConst';
 	export let id;
-	// export let value = InstrumentType.piano;
-	export let value = InstrumentType.base;
+	export let value = InstrumentType.piano;
+	// export let value = InstrumentType.base;
 	// let instrument = ["default","base", "dram", "hat", "snere"
 	// 	// { id: 1, text: `base` },
 	// 	// { id: 2, text: `dram` },
