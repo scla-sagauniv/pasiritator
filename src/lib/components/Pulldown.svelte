@@ -7,7 +7,7 @@
 	// 	// { id: 3, text: `hat` },
   //   // { id: 4, text: `snere` }
 
-	import Button from "./Button.svelte";
+	import Button from "./LoginButton.svelte";
 
   // ];
   
